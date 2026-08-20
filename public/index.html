@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Despesas Ludus — Agosto 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1b2430;
+    --paper:#f6f7f4;
+    --card:#ffffff;
+    --line:#e3e6df;
+    --muted:#6b7480;
+    --brand:#0f4c46;
+    --brand-soft:#e3efec;
+    --paid:#1d7a4f;
+    --paid-bg:#e2f3e9;
+    --pend:#9a6b0f;
+    --pend-bg:#fdf1d7;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Inter',system-ui,sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    padding:32px 16px 80px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1100px;margin:0 auto}
+
+  header.top{
+    background:var(--brand);
+    color:#fff;
+    border-radius:16px;
+    padding:28px 32px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:24px;
+    align-items:flex-end;
+    justify-content:space-between;
+    margin-bottom:14px;
+  }
+  .top h1{
+    font-family:'Archivo',sans-serif;
+    font-weight:800;
+    font-size:clamp(22px,3.4vw,32px);
+    letter-spacing:-.01em;
+    line-height:1.1;
+  }
+  .top .sub{opacity:.75;font-size:13px;margin-top:6px}
+  .totais{display:flex;gap:14px;flex-wrap:wrap}
+  .tot{
+    background:rgba(255,255,255,.1);
+    border:1px solid rgba(255,255,255,.18);
+    border-radius:12px;
+    padding:10px 16px;
+    min-width:150px;
+  }
+  .tot .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.08em;opacity:.7}
+  .tot .val{font-family:'Archivo',sans-serif;font-weight:700;font-size:19px;margin-top:2px}
+  .tot.pago .val{color:#8fe6b6}
+  .tot.pend .val{color:#ffd98a}
+
+  .aviso{
+    font-size:12.5px;color:var(--muted);
+    background:var(--card);border:1px dashed var(--line);
+    border-radius:10px;padding:10px 14px;margin-bottom:24px;
+  }
+  .conferir{
+    display:inline-block;font-size:10px;font-weight:700;
+    background:var(--pend-bg);color:var(--pend);border-radius:5px;
+    padding:2px 7px;letter-spacing:.03em;
+  }
+
+  .grupo{margin-bottom:22px}
+  .grupo-head{
+    display:flex;align-items:center;justify-content:space-between;
+    background:var(--brand-soft);
+    border-radius:10px 10px 0 0;
+    padding:9px 16px;
+  }
+  .grupo-head h3{
+    font-family:'Archivo',sans-serif;font-size:14px;font-weight:700;
+    text-transform:uppercase;letter-spacing:.06em;color:var(--brand);
+  }
+  .grupo-head .gtot{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--brand);font-weight:500}
+
+  .grupo table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-top:none;border-radius:0 0 12px 12px;overflow:hidden;box-shadow:0 1px 3px rgba(27,36,48,.06)}
+  th{
+    text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.07em;
+    color:var(--muted);font-weight:600;padding:10px 14px;background:#fbfcfa;
+    border-bottom:1px solid var(--line);
+  }
+  td{padding:12px 14px;border-bottom:1px solid var(--line);font-size:14px;vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  tr.paga{background:#f4faf6}
+  tr.paga .nome{text-decoration:line-through;text-decoration-color:#9dc7ae;text-decoration-thickness:1.5px;color:#5c7466}
+
+  .nome{font-weight:600}
+  .funcao{display:block;font-size:11.5px;color:var(--muted);font-weight:500;margin-top:2px}
+  .termo{display:block;font-size:11.5px;color:#c0392b;font-weight:700;margin-top:3px}
+  .valor{font-family:'JetBrains Mono',monospace;font-weight:500;white-space:nowrap}
+  .pix{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:#3a4552;word-break:break-all}
+  .copy{
+    margin-left:6px;border:1px solid var(--line);background:#fff;border-radius:6px;
+    font-size:10.5px;padding:2px 7px;cursor:pointer;color:var(--muted);
+    font-family:'Inter',sans-serif;vertical-align:middle;
+  }
+  .copy:hover{border-color:var(--brand);color:var(--brand)}
+  .obs{font-size:12.5px;color:var(--muted);max-width:220px}
+
+  .chk{display:inline-flex;align-items:center;gap:8px;cursor:pointer;white-space:nowrap;
+    -webkit-user-select:none;user-select:none}
+  .chk input[type=checkbox]{
+    width:18px;height:18px;flex:none;margin:0;cursor:pointer;accent-color:var(--paid);
+  }
+  .chk .chk-lbl{
+    border-radius:999px;font-family:'Inter',sans-serif;font-weight:600;font-size:12px;
+    padding:5px 12px;background:var(--pend-bg);color:var(--pend);transition:background .12s,color .12s;
+  }
+  .chk input[type=checkbox]:checked + .chk-lbl{background:var(--paid-bg);color:var(--paid)}
+
+  footer{margin-top:40px;text-align:center;font-size:12px;color:var(--muted)}
+
+  @media(max-width:760px){
+    th.hide-m,td.hide-m{display:none}
+    td,th{padding:10px 10px}
+    header.top{padding:22px}
+  }
+  @media print{
+    .copy,.barra-acoes{display:none}
+    body{padding:0;background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .chk .chk-lbl{border:1px solid #999}
+    .chk input[type=checkbox]{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  }
+
+  .barra-acoes{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+  .acao{
+    border:1px solid var(--line);background:#fff;border-radius:8px;cursor:pointer;
+    font-family:'Inter',sans-serif;font-weight:600;font-size:12.5px;padding:8px 14px;color:var(--muted);
+  }
+  .acao:hover{border-color:var(--brand);color:var(--brand)}
+  .head-top{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
+  .badge{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;background:var(--brand);color:#fff;padding:6px 14px;border-radius:20px}
+  .resumo{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap}
+  .resumo .tot{flex:1;min-width:150px}
+  /* --- estado compartilhado --- */
+  .sync-chip{
+    display:inline-flex;align-items:center;gap:7px;
+    font-family:'Inter',sans-serif;font-size:12px;font-weight:600;
+    padding:8px 14px;border-radius:8px;border:1px solid var(--line);
+    background:#fff;color:var(--muted);
+  }
+  .sync-chip::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor;flex:none}
+  .sync-chip[data-estado="ok"]{color:var(--paid);border-color:#bfe3cd;background:var(--paid-bg)}
+  .sync-chip[data-estado="salvando"]{color:var(--pend);border-color:#ecd9a8;background:var(--pend-bg)}
+  .sync-chip[data-estado="local"]{color:#5b6673;border-color:var(--line);background:#eef0ec}
+  .sync-chip[data-estado="erro"]{color:#a33327;border-color:#f0c6c0;background:#fdeaea}
+  a.acao{text-decoration:none;display:inline-flex;align-items:center}
+  a.acao.sair{margin-left:auto}
+  body.offline .chk input[type=checkbox]{opacity:.7}
+  @media print{ .sync-chip{display:none} }
+
+</style>
+<style>
+  .data{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);white-space:nowrap}
+  .sec-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:800;margin:34px 0 4px;padding-bottom:8px;border-bottom:2.5px solid var(--brand)}
+  .sec-title small{font-family:'JetBrains Mono',monospace;font-size:13px;float:right;margin-top:8px;color:var(--brand)}
+  .grupo-head.verde h3{color:#1d6b4a}
+  .grupo-head.verde .gtot{color:#1d6b4a}
+  tr.vencida td{background:#fdeaea}
+  tr.vencida .data{color:#a33327;font-weight:700}
+  tr.vencida .nome::after{content:" ⚠️ VENCIDA";color:#a33327;font-size:10px;font-weight:800}
+  tr.vence-hoje td{background:#fdf3d7}
+  tr.vence-hoje .data{color:#8a5a00;font-weight:700}
+  tr.vence-hoje .nome::after{content:" ⏰ VENCE HOJE";color:#8a5a00;font-size:10px;font-weight:800}
+  tr.validacao td{background:#ffe9d1}
+  tr.validacao .data{color:#c05d00;font-weight:700}
+  tr.validacao .nome::after{content:" 🟠 EM VALIDAÇÃO COM A FATURA";color:#c05d00;font-size:10px;font-weight:800}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="head-top">
+      <h1>Despesas de Agosto 2026</h1>
+      <div class="badge">Gerais · PJ · Ferramentas</div>
+    </div>
+    <div class="resumo">
+      <div class="tot"><div class="lbl">Total de despesas</div><div class="val">R$ 108.675,31</div></div>
+      <div class="tot pago"><div class="lbl">Pago</div><div class="val" id="totPago">R$ 0,00</div></div>
+      <div class="tot pend"><div class="lbl">Pendente</div><div class="val" id="totPend">R$ 108.675,31</div></div>
+    </div>
+  </header>
+
+  <div class="aviso">
+    ✅ <b>Marque a caixa de seleção</b> na coluna <b>Status</b> quando o pagamento for feito — marcada = <b>Pago ✓</b>, desmarcada = <b>Pendente</b>. As marcações são <b>salvas no servidor e compartilhadas</b>: todo mundo que entrar com a senha vê o mesmo status, e a tela se atualiza sozinha a cada 10 segundos. Use <b>copiar</b> nas chaves PIX.
+  </div>
+
+  <div class="barra-acoes">
+    <span class="sync-chip" id="chip" data-estado="carregando">Carregando…</span>
+    <button class="acao" id="btnLimpar" onclick="limparMarcacoes()">Desmarcar tudo</button>
+    <button class="acao" onclick="window.print()">Imprimir / PDF</button>
+    <a class="acao sair" href="/sair">Sair</a>
+  </div>
+
+  <div class="sec-title">1 · Prestadores PJ <small>R$ 79.832,92 · 23 prestadores · venc. 10/08</small></div>
+  <!-- LUDUS HEALTH -->
+  <div class="grupo">
+    <div class="grupo-head"><h3>Ludus Health · 12 prestadores</h3><div class="gtot">R$ 31.946,60</div></div>
+    <table>
+      <thead><tr><th>Prestador</th><th>Valor</th><th>Chave PIX</th><th class="hide-m">Observações</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr data-valor="1880">
+          <td><span class="nome">Ana Luiza Fernandes</span><span class="funcao">SDR</span></td>
+          <td class="valor">R$ 1.880,00</td>
+          <td class="pix">61995097077 <button class="copy" onclick="copiar(this,'61995097077')">copiar</button></td>
+          <td class="obs hide-m">Base R$ 1.600 + Adicional de agendamentos R$ 280 — 1.600 + 280</td>
+          <td><label class="chk"><input type="checkbox" onchange="toggle(this)"><span class="chk-lbl">Pendente</span></label></td>
+        </tr>
+        <tr data-valor="1700">
+          <td><span class="nome">Bruna Cinezio</span><span class="funcao">Social Mídia</span><span class="termo">⚠️ Contrato encerrado em 27/07 — último pagamento</span></td>
+          <td class="valor">R$ 1.700,00</td>
+          <td class="pix">70614181410 <button class="copy" onclick="copiar(this,'70614181410')">copiar</button></td>
+          <td class="obs hide-m">Valor confirmado: R$ 1.700</td>
+          <td><label class="chk"><input type="checkbox" onchange="toggle(this)"><span class="chk-lbl">Pendente</span></label></td>
+        </tr>
+        <tr data-valor="1600">
+          <td><span class="nome">Débora Lins de Sousa Lima</span><span class="funcao">SDR</span></td>
+          <td class="valor">R$ 1.600,00</td>
+          <td class="pix">83991449806 <button class="copy" onclick="copiar(this,'83991449806')">copiar</button></td>
+          <td class="obs hide-m">Agora na Health como SDR (era Experts / Social Mídia, R$ 2.000)</td>
+          <td><label class="chk"><input type="checkbox" onchange="toggle(this)"><span class="chk-lbl">Pendente</span></label></td>
+        </tr>
+        <tr data-valor="1600">
+          <td><span class="nome">Gabriela Campos Medeiros</span><span class="funcao">Social Seller</span><span class="termo">⚠️ Contrato encerrado em 21/07 — último pagamento (recibo assinado)</span></td>
+          <td class="valor">R$ 1.600,00</td>
+          <td class="pix">098.176.334-03 <button class="copy" onclick="copiar(this,'098.176.334-03')">copiar</button></td>
+          <td class="obs hide-m">—</td>
+          <td><label class="chk"><input type="checkbox" onchange="toggle(this)"><span class="chk-lbl">Pendente</span></label></td>
+        </tr>
+        <tr data-valor="7000">
+          <td><span class="nome">José de Arimateia Cavalcante Lins</span><span class="funcao">Head de Marketing</span></td>
+          <td class="valor">R$ 7.000,00</td>
+          <td class="pix">65.017.797/0001-85 <button class="copy" onclick="copiar(this,'65.017.797/0001-85')">copiar</button></td>
+          <td class="obs hide-m">Confirmado (Júnior)</td>
+          <td><label class="chk"><input type="checkbox" onchange="toggle(this)"><span class="chk-lbl">Pendente</span></label></td>
+        </tr>
+        <tr data-valor="1600">
+          <td><span class="nome">Larissa José dos Santos</span><span class="funcao">Social Seller</span></td>
+          <td class="valor">R$ 1.600,00</td>
+          <td class="pix">83 99164-1442 <button class="copy" onclick="copiar(this,'83991641442')">copiar</button></td>
+          <td class="obs hide-m">Confirmado</td>
+          <td><label class="chk"><input type="checkbox" onchange="toggle(this)"><span class="chk-lbl">Pendente</span></label></td>
+        </tr>
+        <tr data-valor="4000">
+          <td><span class="nome">Pedro Queiroz</span><span class="funcao">Designer</span></td>
+          <td class="valor">R$ 4.000,00</td>
+          <td class="pix">13981366139 <button class="copy" onclick="copiar(this,'13981366139')">copiar</button></td>
+          <td class="obs hide-m">Continua no time — R$ 4.000 confirmado</td>
+          <td><label class="chk"><input type="checkbox" onchange="toggle(this)"><span class="chk-lbl">Pendente</span></label></td>
+        </tr>
+        <tr data-valor="3000">
+          <td><span class="nome">Randson Emanuel Vitor</span><span class="funcao">Tráfego Pago</span></td>
+          <td class="valor">R$ 3.000,00</td>
+          <td class="pix">6103055500170 <button class="copy" onclick="copiar(this,'6103055500170')">copiar</button></td>
+          <td class="obs hide-m">Confirmado: R$ 3.000 em agosto</td>
+          <td><label class="chk"><input type="checkbox" onchange="toggle(this)"><span class="chk-lbl">Pendente</span></label></td>
+        </tr>
+        <tr data-valor="1766.60">
+          <td><span class="nome">Shirley Micaella Soares Souza</span><span class="funcao">Comercial · + Adicional de agendamentos</span></td>
+          <td class="valor">R$ 1.766,60</td>
+          <td class="pix">83999216813 <button class="copy" onclick="copiar(this,'83999216813')">copiar</button></td>
+          <td class="obs hide-m">Base R$ 1.600 + Adicional de agendamentos R$ 166,60 — 1.600 + 166,60</td>
+          <td><label class="chk"><input type="checkbox" onchange="toggle(this)"><span class="chk-lbl">Pendente</span></label></td>
+        </tr>
+        <tr data-valor="1600">
+          <td><span class="nome">Thalita Henrique da Silva</span><span class="funcao">SDR</span></td>
+          <td class="valor">R$ 1.600,00</td>
+          <td class="pix">thalita.Henriqueofc@gmail.com <button class="copy" onclick="copiar(this,'thalita.Henriqueofc@gmail.com')">copiar</button></td>
+          <td class="obs hide-m">Confirmado</td>
+          <td><label class="chk"><input type="checkbox" onchange="toggle(this)"><span class="chk-lbl">Pendente</span></label></td>
+        </tr>
+        <tr data-valor="3200">
+          <td><span class="nome">Thays Teixeira</span><span class="funcao">Supervisão SDR</span></td>
+          <td class="valor">R$ 3.200,00</td>
+          <td class="pix">thaysnayanny@gmail.com <button class="copy" onclick="copiar(this,'thaysnayanny@gmail.com')">copiar</button></td>
+          <td class="obs hide-m">Confirmado</td>
+          <td><label class="chk"><input type="checkbox" onchange="toggle(this)"><span class="chk-lbl">Pendente</span></label></td>
+        </tr>
+        <tr data-valor="3000">
+          <td><span class="nome">Victor Matheus Soares de Lima</span><span class="funcao">Editor de Vídeo</span></td>
+          <td class="valor">R$ 3.000,00</td>
+          <td class="pix">83988630952 <button class="copy" onclick="copiar(this,'83988630952')">copiar</button></td>
+          <td class="obs hide-m">—</td>
+          <td><label class="chk"><input type="checkbox" onchange="toggle(this)"><span class="chk-lbl">Pendente</span></label></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- FORGE -->
+  <div class="grupo">
+    <div class="grupo-head"><h3>Forge · 2 prestadores</h3><div class="gtot">R$ 4.994,00</div></div>
+    <table>
+      <thead><tr><th>Prestador</th><th>Valor</th><th>Chave PIX</th><th class="hide-m">Observações</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr data-valor="3394">
+          <td><span class="nome">Alisson Ferreira</span><span class="funcao">Comercial · + Reembolso Forge R$ 94,00</span></td>
+          <td class="valor">R$ 3.394,00</td>
+          <td class="pix">83999125035 <button class="copy" onclick="copiar(this,'83999125035')">copiar</button></td>
+          <td class="obs hide-m">Inclui Reembolso Forge R$ 94,00 (compra de materiais) — 3.300 + 94</td>
+          <td><label class="chk"><input type="checkbox" onchange="toggle(this)"><span class="chk-lbl">Pendente</span></label></td>
+        </tr>
+        <tr data-valor="1600">
+          <td><span class="nome">Vivian Gonçalves Soares</span><span class="funcao">SDR</span></td>
+          <td class="valor">R$ 1.600,00</td>
+          <td class="pix">31c4ba61-70d9-4e4e-a338-4e806f57626d <button class="copy" onclick="copiar(this,'31c4ba61-70d9-4e4e-a338-4e806f57626d')">copiar</button></td>
+          <td class="obs hide-m">Chave aleatória — copiar com atenção · valor ajustado (era R$ 1.733,34)</td>
+          <td><label class="chk"><input type="checkbox" onchange="toggle(this)"><span class="chk-lbl">Pendente</span></label></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- LUDUS EXPERTS -->
+  <div class="grupo">
+    <div class="grupo-head"><h3>Ludus Experts · 1 prestadora</h3><div class="gtot">R$ 1.600,00</div></div>
+    <table>
+      <thead><tr><th>Prestador</th><th>Valor</th><th>Chave PIX</th><th class="hide-m">Observações</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr data-valor="1600">
+          <td><span class="nome">Samira Gomes Medina</span><span class="funcao">Sucesso do Cliente</span></td>
+          <td class="valor">R$ 1.600,00</td>
+          <td class="pix">70066366631 <button class="copy" onclick="copiar(this,'70066366631')">copiar</button></td>
+          <td class="obs hide-m">Confirmado</td>
+          <td><label class="chk"><input type="checkbox" onchange="toggle(this)"><span class="chk-lbl">Pendente</span></label></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- CPP -->
+  <div class="grupo">
+    <div class="grupo-head"><h3>CPP · 3 prestadores</h3><div class="gtot">R$ 10.157,80</div></div>
+    <table>
+      <thead><tr><th>Prestador</th><th>Valor</th><th>Chave PIX</th><th class="hide-m">Observações</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr data-valor="3025">
+          <td><span class="nome">Stephany das Chagas</span><span class="funcao">SDR</span></td>
+          <td class="valor">R$ 3.025,00</td>
+          <td class="pix">58.242.159/0001-00 <button class="copy" onclick="copiar(this,'58.242.159/0001-00')">copiar</button></td>
+          <td class="obs hide-m">Inclui R$ 25,00 do plano celular · ⚠️ + Reembolso CPP a definir</td>
+          <td><label class="chk"><input type="checkbox" onchange="toggle(this)"><span class="chk-lbl">Pendente</span></label></td>
+        </tr>
+        <tr data-valor="3000">
+          <td><span class="nome">Victor Silva</span><span class="funcao">Designer</span></td>
+          <td class="valor">R$ 3.000,00</td>
+          <td class="pix">voxes@menth.com.br <button class="copy" onclick="copiar(this,'voxes@menth.com.br')">copiar</button></td>
+          <td class="obs hide-m">Confirmado</td>
+          <td><label class="chk"><input type="checkbox" onchange="toggle(this)"><span class="chk-lbl">Pendente</span></label></td>
+        </tr>
+<tr data-valor="4132.80">
+          <td><span class="nome">Larissa Eustaquio</span><span class="funcao">Head de Marketing</span></td>
+          <td class="valor">R$ 4.132,80</td>
+          <td class="pix">56.689.980/0001-36 <button class="copy" onclick="copiar(this,'56.689.980/0001-36')">copiar</button></td>
+          <td class="obs hide-m">Inclui Reembolso CPP R$ 132,80 (ônibus R$ 107,80 + entrega papel raro R$ 25,00) — 4.000 + 132,80</td>
+          <td><label class="chk"><input type="checkbox" onchange="toggle(this)"><span class="chk-lbl">Pendente</span></label></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- GERAL -->
+  <div class="grupo">
+    <div class="grupo-head"><h3>Geral · 2 prestadores</h3><div class="gtot">R$ 14.134,52</div></div>
+    <table>
+      <thead><tr><th>Prestador</th><th>Valor</th><th>Chave PIX</th><th class="hide-m">Observações</th><th>Status</th></tr></thead>
+      <tbody>
+<tr data-valor="10094.52">
+          <td><span class="nome">Lucas Campos</span><span class="funcao">Tráfego Pago · + Reembolso CPP R$ 94,52</span></td>
+          <td class="valor">R$ 10.094,52</td>
+          <td class="pix">15456497662 <button class="copy" onclick="copiar(this,'15456497662')">copiar</button></td>
+          <td class="obs hide-m">Confirmado · inclui Reembolso CPP R$ 94,52 — 10.000 + 94,52</td>
+          <td><label class="chk"><input type="checkbox" onchange="toggle(this)"><span class="chk-lbl">Pendente</span></label></td>
+        </tr>
+<tr data-valor="4040">
+          <td><span class="nome">Rachel Lima</span><span class="funcao">Analista</span></td>
+          <td class="valor">R$ 4.040,00</td>
+          <td class="pix">58.319.657/0001-04 <button class="copy" onclick="copiar(this,'58.319.657/0001-04')">copiar</button></td>
+          <td class="obs hide-m">Inclui R$ 40,00 do plano celular · ⚠️ + Reembolso CPP a definir</td>
+          <td><label class="chk"><input type="checkbox" onchange="toggle(this)"><span class="chk-lbl">Pendente</span></label></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- HEALTH/FORGE -->
+  <div class="grupo">
+    <div class="grupo-head"><h3>Health / Forge (compartilhado) · 1 prestadora</h3><div class="gtot">R$ 2.000,00</div></div>
+    <table>
+      <thead><tr><th>Prestador</th><th>Valor</th><th>Chave PIX</th><th class="hide-m">Observações</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr data-valor="2000">
+          <td><span class="nome">Janmilly Alves</span><span class="funcao">Suporte ao Cliente · valor atualizado</span></td>
+          <td class="valor">R$ 2.000,00</td>
+          <td class="pix">96991676520 <button class="copy" onclick="copiar(this,'96991676520')">copiar</button></td>
+          <td class="obs hide-m">Confirmado — R$ 2.000</td>
+          <td><label class="chk"><input type="checkbox" onchange="toggle(this)"><span class="chk-lbl">Pendente</span></label></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SÓCIOS -->
+  <div class="grupo">
+    <div class="grupo-head"><h3>Sócios · 2 pagamentos</h3><div class="gtot">R$ 15.000,00</div></div>
+    <table>
+      <thead><tr><th>Prestador</th><th>Valor</th><th>Chave PIX</th><th class="hide-m">Observações</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr data-valor="5000">
+          <td><span class="nome">Renata Cruz</span><span class="funcao">Comercial</span></td>
+          <td class="valor">R$ 5.000,00</td>
+          <td class="pix">065.116.744-28 <button class="copy" onclick="copiar(this,'065.116.744-28')">copiar</button></td>
+          <td class="obs hide-m">Confirmado · conta Patrick · papel raro CPP foi p/ Reembolsos extras</td>
+          <td><label class="chk"><input type="checkbox" onchange="toggle(this)"><span class="chk-lbl">Pendente</span></label></td>
+        </tr>
+        <tr data-valor="10000">
+          <td><span class="nome">Wander Fran</span><span class="funcao">Estrategista</span></td>
+          <td class="valor">R$ 10.000,00</td>
+          <td class="pix">026.083.562-57 <button class="copy" onclick="copiar(this,'026.083.562-57')">copiar</button></td>
+          <td class="obs hide-m">Confirmado · conta Patrick</td>
+          <td><label class="chk"><input type="checkbox" onchange="toggle(this)"><span class="chk-lbl">Pendente</span></label></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sec-title">2 · Despesas Gerais <small>R$ 18.246,00 · 7 itens</small></div>
+  <table>
+    <thead><tr><th>Despesa</th><th class="hide-m">Data</th><th>Valor</th><th>PIX / Pagamento</th><th class="hide-m">Observações</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr data-valor="2000">
+        <td><span class="nome">Captação Zana — Dr Bruno e Dra Fran</span><span class="funcao">Health · Videomaker</span></td>
+        <td class="data hide-m">10/08/2026</td>
+        <td class="valor">R$ 2.000,00</td>
+        <td class="pix">024.678.660-41 <button class="copy" onclick="copiar(this,'024.678.660-41')">copiar</button></td>
+        <td class="obs hide-m">Houzana Carvalho · C6 Bank</td>
+        <td><label class="chk"><input type="checkbox" onchange="toggle(this)"><span class="chk-lbl">Pendente</span></label></td>
+      </tr>
+      <tr data-valor="500">
+        <td><span class="nome">Assessoria Jurídica</span><span class="funcao">Jurídico</span></td>
+        <td class="data hide-m">10/08/2026</td>
+        <td class="valor">R$ 500,00</td>
+        <td class="pix">05414432406 <button class="copy" onclick="copiar(this,'05414432406')">copiar</button></td>
+        <td class="obs hide-m">Vitor Carvalho</td>
+        <td><label class="chk"><input type="checkbox" onchange="toggle(this)"><span class="chk-lbl">Pendente</span></label></td>
+      </tr>
+      <tr data-valor="154">
+        <td><span class="nome">DCT — Metran</span><span class="funcao">DCT · MDI Park Office Ltda</span></td>
+        <td class="data hide-m"><b>05/08/2026</b></td>
+        <td class="valor">R$ 154,00</td>
+        <td class="pix">Boleto Itaú: 34191.09008 00524.795572 99933.370001 6 15290000015400 <button class="copy" onclick="copiar(this,'34191090080052479557299933370001615290000015400')">copiar código</button></td>
+        <td class="obs hide-m">⚠️ Vence 05/08 · juros 5,9% a.m. após vencimento</td>
+        <td><label class="chk"><input type="checkbox" onchange="toggle(this)"><span class="chk-lbl">Pendente</span></label></td>
+      </tr>
+      <tr data-valor="14000">
+        <td><span class="nome">DCT — Aluguel Coworking</span><span class="funcao">DCT</span></td>
+        <td class="data hide-m">10/08/2026</td>
+        <td class="valor">R$ 14.000,00</td>
+        <td class="pix">30.455.193/0001-36 <button class="copy" onclick="copiar(this,'30.455.193/0001-36')">copiar</button></td>
+        <td class="obs hide-m">Parcela de R$ 12.000 + 1 parcela de R$ 2.000 do acordo da sala menor · PIX CNPJ · BB Ag 0011-6 CC 31329-7</td>
+        <td><label class="chk"><input type="checkbox" onchange="toggle(this)"><span class="chk-lbl">Pendente</span></label></td>
+      </tr>
+      
+      
+      <tr data-valor="480">
+        <td><span class="nome">Contador Meizon — JULHO</span><span class="funcao">Contábil · ⚠️ VENCIDO 10/07 — pagar com encargos</span></td>
+        <td class="data hide-m">10/07/2026</td>
+        <td class="valor">R$ 480,00</td>
+        <td class="pix">Boleto Sicoob: 75691.30318 01451.939605 00027.540012 5 15030000048000 <button class="copy" onclick="copiar(this,'75691303180145193960500027540012515030000048000')">copiar código</button></td>
+        <td class="obs hide-m">Boleto vencido — banco recalcula juros no pagamento</td>
+        <td><label class="chk"><input type="checkbox" onchange="toggle(this)"><span class="chk-lbl">Pendente</span></label></td>
+      </tr>
+      <tr data-valor="500">
+        <td><span class="nome">Contador Meizon — AGOSTO</span><span class="funcao">Contábil</span></td>
+        <td class="data hide-m">10/08/2026</td>
+        <td class="valor">R$ 500,00</td>
+        <td class="pix">Boleto Sicoob: 75691.30318 01451.939605 00037.630019 3 15340000050000 <button class="copy" onclick="copiar(this,'75691303180145193960500037630019315340000050000')">copiar código</button></td>
+        <td class="obs hide-m">—</td>
+        <td><label class="chk"><input type="checkbox" onchange="toggle(this)"><span class="chk-lbl">Pendente</span></label></td>
+      </tr>
+      <tr data-valor="612">
+        <td><span class="nome">Armazenamento dos Livros — JULHO + AGOSTO</span><span class="funcao">Sr. Luiz · Intreg Books · boleto único dos 2 meses</span></td>
+        <td class="data hide-m">10/08/2026</td>
+        <td class="valor">R$ 612,00</td>
+        <td class="pix">Boleto Itaú: 34191.57007 00028.302925 19912.260007 2 15340000061200 <button class="copy" onclick="copiar(this,'34191570070002830292519912260007215340000061200')">copiar código</button></td>
+        <td class="obs hide-m">Juros 2% a.m. + multa 0,50% após vencimento</td>
+        <td><label class="chk"><input type="checkbox" onchange="toggle(this)"><span class="chk-lbl">Pendente</span></label></td>
+      </tr>
+      </tbody>
+  </table>
+
+  <div class="sec-title">3 · Ferramentas e Reembolsos <small>R$ 10.596,39</small></div>
+
+  <div class="grupo">
+    <div class="grupo-head"><h3>Cartão Renata — ferramentas de julho · 🟠 em validação com a fatura · reembolso paga em 15/08 · extras em 14/08</h3><div class="gtot">R$ 3.573,67</div></div>
+    <table>
+      <thead><tr><th>Item</th><th class="hide-m">Data</th><th>Valor</th><th class="hide-m">Observações</th><th>Status</th></tr></thead>
+      <tbody>
+      <tr data-valor="3573.67" class="validacao">
+        <td><span class="nome">Reembolso Cartão Renata (13 itens)</span><span class="funcao">PIX 065.116.744-28 <button class="copy" onclick="copiar(this,'065.116.744-28')">copiar</button></span></td>
+        <td class="data hide-m">15/08</td>
+        <td class="valor">R$ 3.573,67</td>
+        <td class="obs hide-m">Cartões 2739 e 4811 · Tintin 1.140 (Notion) · Monday julho (cancela 10/08) · domínios Pofazze · PARCIAL — em validação com a fatura · pagar em 15/08</td>
+        <td><label class="chk"><input type="checkbox" onchange="toggle(this)"><span class="chk-lbl">Pendente</span></label></td>
+      </tr>
+      <tr data-valor="254.70">
+        <td><span class="nome">Reembolsos extras — Renata</span><span class="funcao">PIX 065.116.744-28 <button class="copy" onclick="copiar(this,'065.116.744-28')">copiar</button></span></td>
+        <td class="data hide-m">14/08</td>
+        <td class="valor">R$ 254,70</td>
+        <td class="obs hide-m">Multa Meizon 29,70 + Entrega papel raro CPP 30,00 + Teleprompter 1/3 195,00 (🔩 física · 2/3 e 3/3 em set/out) · ✅ já pode pagar</td>
+        <td><label class="chk"><input type="checkbox" onchange="toggle(this)"><span class="chk-lbl">Pendente</span></label></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="grupo">
+    <div class="grupo-head verde"><h3>Previsão de agosto · 21 ferramentas · todos os projetos</h3><div class="gtot">R$ 6.768,02</div></div>
+    <table>
+      <thead><tr><th>Ferramenta</th><th class="hide-m">Venc.</th><th>Valor</th><th class="hide-m">Observações</th><th>Status</th></tr></thead>
+      <tbody>
+      <tr data-valor="550.00">
+        <td><span class="nome">Claude 1</span><span class="funcao">Previsão de agosto</span></td>
+        <td class="data hide-m">07/08</td>
+        <td class="valor">R$ 550,00</td>
+        <td class="obs hide-m">—</td>
+        <td><label class="chk"><input type="checkbox" onchange="toggle(this)"><span class="chk-lbl">Pendente</span></label></td>
+      </tr>
+<tr data-valor="96.99" class="paga">
+        <td><span class="nome">Google Drive</span><span class="funcao">Previsão de agosto</span></td>
+        <td class="data hide-m">08/08</td>
+        <td class="valor">R$ 96,99</td>
+        <td class="obs hide-m">✅ Pago em 06/08</td>
+        <td><label class="chk"><input type="checkbox" checked onchange="toggle(this)"><span class="chk-lbl">Pago ✓</span></label></td>
+      </tr>
+<tr data-valor="123.98" class="paga">
+        <td><span class="nome">Zoom — Patrick Suyti</span><span class="funcao">Previsão de agosto</span></td>
+        <td class="data hide-m">10/08</td>
+        <td class="valor">R$ 123,98</td>
+        <td class="obs hide-m">✅ Pago em 10/08</td>
+        <td><label class="chk"><input type="checkbox" checked onchange="toggle(this)"><span class="chk-lbl">Pago ✓</span></label></td>
+      </tr>
+<tr data-valor="221.00">
+        <td><span class="nome">Workspace — 2 usuários</span><span class="funcao">Previsão de agosto</span></td>
+        <td class="data hide-m">11/08</td>
+        <td class="valor">R$ 221,00</td>
+        <td class="obs hide-m">—</td>
+        <td><label class="chk"><input type="checkbox" onchange="toggle(this)"><span class="chk-lbl">Pendente</span></label></td>
+      </tr>
+<tr data-valor="99.00">
+        <td><span class="nome">Adobe</span><span class="funcao">Previsão de agosto</span></td>
+        <td class="data hide-m">11/08</td>
+        <td class="valor">R$ 99,00</td>
+        <td class="obs hide-m">—</td>
+        <td><label class="chk"><input type="checkbox" onchange="toggle(this)"><span class="chk-lbl">Pendente</span></label></td>
+      </tr>
+<tr data-valor="103.30">
+        <td><span class="nome">Figma</span><span class="funcao">Previsão de agosto</span></td>
+        <td class="data hide-m">13/08</td>
+        <td class="valor">R$ 103,30</td>
+        <td class="obs hide-m">—</td>
+        <td><label class="chk"><input type="checkbox" onchange="toggle(this)"><span class="chk-lbl">Pendente</span></label></td>
+      </tr>
+<tr data-valor="35.97">
+        <td><span class="nome">Hostinger — Forge</span><span class="funcao">Previsão de agosto</span></td>
+        <td class="data hide-m">17/08</td>
+        <td class="valor">R$ 35,97</td>
+        <td class="obs hide-m">—</td>
+        <td><label class="chk"><input type="checkbox" onchange="toggle(this)"><span class="chk-lbl">Pendente</span></label></td>
+      </tr>
+<tr data-valor="120.00">
+        <td><span class="nome">ChatGPT</span><span class="funcao">Previsão de agosto</span></td>
+        <td class="data hide-m">17/08</td>
+        <td class="valor">R$ 120,00</td>
+        <td class="obs hide-m">—</td>
+        <td><label class="chk"><input type="checkbox" onchange="toggle(this)"><span class="chk-lbl">Pendente</span></label></td>
+      </tr>
+<tr data-valor="550.00">
+        <td><span class="nome">Claude Comercial</span><span class="funcao">Previsão de agosto</span></td>
+        <td class="data hide-m">20/08</td>
+        <td class="valor">R$ 550,00</td>
+        <td class="obs hide-m">—</td>
+        <td><label class="chk"><input type="checkbox" onchange="toggle(this)"><span class="chk-lbl">Pendente</span></label></td>
+      </tr>
+<tr data-valor="174.90">
+        <td><span class="nome">Reportei — 10 clientes</span><span class="funcao">Previsão de agosto</span></td>
+        <td class="data hide-m">21/08</td>
+        <td class="valor">R$ 174,90</td>
+        <td class="obs hide-m">—</td>
+        <td><label class="chk"><input type="checkbox" onchange="toggle(this)"><span class="chk-lbl">Pendente</span></label></td>
+      </tr>
+<tr data-valor="199.20">
+        <td><span class="nome">Reportei Flux — 7 clientes</span><span class="funcao">Previsão de agosto</span></td>
+        <td class="data hide-m">21/08</td>
+        <td class="valor">R$ 199,20</td>
+        <td class="obs hide-m">—</td>
+        <td><label class="chk"><input type="checkbox" onchange="toggle(this)"><span class="chk-lbl">Pendente</span></label></td>
+      </tr>
+<tr data-valor="180.00">
+        <td><span class="nome">Freepik</span><span class="funcao">Previsão de agosto</span></td>
+        <td class="data hide-m">24/08</td>
+        <td class="valor">R$ 180,00</td>
+        <td class="obs hide-m">—</td>
+        <td><label class="chk"><input type="checkbox" onchange="toggle(this)"><span class="chk-lbl">Pendente</span></label></td>
+      </tr>
+<tr data-valor="387.00">
+        <td><span class="nome">Panda Vídeo</span><span class="funcao">Previsão de agosto</span></td>
+        <td class="data hide-m">24/08</td>
+        <td class="valor">R$ 387,00</td>
+        <td class="obs hide-m">—</td>
+        <td><label class="chk"><input type="checkbox" onchange="toggle(this)"><span class="chk-lbl">Pendente</span></label></td>
+      </tr>
+<tr data-valor="23.90">
+        <td><span class="nome">Hostinger — Ludus Health</span><span class="funcao">Previsão de agosto</span></td>
+        <td class="data hide-m">26/08</td>
+        <td class="valor">R$ 23,90</td>
+        <td class="obs hide-m">—</td>
+        <td><label class="chk"><input type="checkbox" onchange="toggle(this)"><span class="chk-lbl">Pendente</span></label></td>
+      </tr>
+<tr data-valor="997.00">
+        <td><span class="nome">Cademi</span><span class="funcao">Previsão de agosto</span></td>
+        <td class="data hide-m">26/08</td>
+        <td class="valor">R$ 997,00</td>
+        <td class="obs hide-m">—</td>
+        <td><label class="chk"><input type="checkbox" onchange="toggle(this)"><span class="chk-lbl">Pendente</span></label></td>
+      </tr>
+<tr data-valor="116.99">
+        <td><span class="nome">Zoom — Mentoria CPP</span><span class="funcao">Previsão de agosto</span></td>
+        <td class="data hide-m">28/08</td>
+        <td class="valor">R$ 116,99</td>
+        <td class="obs hide-m">—</td>
+        <td><label class="chk"><input type="checkbox" onchange="toggle(this)"><span class="chk-lbl">Pendente</span></label></td>
+      </tr>
+<tr data-valor="359.99">
+        <td><span class="nome">Hostinger — KVM 8</span><span class="funcao">Previsão de agosto</span></td>
+        <td class="data hide-m">28/08</td>
+        <td class="valor">R$ 359,99</td>
+        <td class="obs hide-m">—</td>
+        <td><label class="chk"><input type="checkbox" onchange="toggle(this)"><span class="chk-lbl">Pendente</span></label></td>
+      </tr>
+<tr data-valor="1100.00">
+        <td><span class="nome">Claude 2</span><span class="funcao">Previsão de agosto</span></td>
+        <td class="data hide-m">28/08</td>
+        <td class="valor">R$ 1.100,00</td>
+        <td class="obs hide-m">—</td>
+        <td><label class="chk"><input type="checkbox" onchange="toggle(this)"><span class="chk-lbl">Pendente</span></label></td>
+      </tr>
+<tr data-valor="141.00">
+        <td><span class="nome">Flu.ke</span><span class="funcao">Previsão de agosto</span></td>
+        <td class="data hide-m">31/08</td>
+        <td class="valor">R$ 141,00</td>
+        <td class="obs hide-m">—</td>
+        <td><label class="chk"><input type="checkbox" onchange="toggle(this)"><span class="chk-lbl">Pendente</span></label></td>
+      </tr>
+<tr data-valor="1140.00">
+        <td><span class="nome">Tintin</span><span class="funcao">Previsão de agosto</span></td>
+        <td class="data hide-m">31/08</td>
+        <td class="valor">R$ 1.140,00</td>
+        <td class="obs hide-m">—</td>
+        <td><label class="chk"><input type="checkbox" onchange="toggle(this)"><span class="chk-lbl">Pendente</span></label></td>
+      </tr>
+<tr data-valor="47.80">
+        <td><span class="nome">Hostinger — Ludus Experts</span><span class="funcao">Previsão de agosto</span></td>
+        <td class="data hide-m">31/08</td>
+        <td class="valor">R$ 47,80</td>
+        <td class="obs hide-m">—</td>
+        <td><label class="chk"><input type="checkbox" onchange="toggle(this)"><span class="chk-lbl">Pendente</span></label></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="aviso" style="margin-top:20px">
+    ⚠️ <b>Algumas ferramentas em fechamento podem variar — agosto.</b> Sem Monday na previsão (será cancelado em 10/08 — só a cobrança de julho no reembolso).
+  </div>
+
+  <footer>
+    Ludus · Despesas de Agosto 2026 — Gerais R$ 18.246,00 · PJ R$ 79.832,92 · Ferramentas R$ 10.596,39 · <b>Total R$ 108.675,31</b>
+  </footer>
+</div>
+
+<script>
+  /* ============ base ============ */
+  const TOTAL = 108675.31;
+  const fmt = v => 'R$ ' + v.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  const linhas = () => document.querySelectorAll('tr[data-valor]');
+  const chip = document.getElementById('chip');
+
+  function rowId(tr){
+    const nome = tr.querySelector('.nome');
+    return (nome ? nome.textContent.trim() : '?') + '|' + (tr.dataset.valor || '');
+  }
+
+  function recalc(){
+    let pago = 0;
+    linhas().forEach(tr => { if (tr.classList.contains('paga')) pago += parseFloat(tr.dataset.valor); });
+    document.getElementById('totPago').textContent = fmt(pago);
+    document.getElementById('totPend').textContent = fmt(Math.max(TOTAL - pago, 0));
+  }
+
+  function pintar(tr, on){
+    tr.classList.toggle('paga', on);
+    const cb  = tr.querySelector('.chk input[type=checkbox]');
+    const lbl = tr.querySelector('.chk .chk-lbl');
+    if (cb)  cb.checked = on;
+    if (lbl) lbl.textContent = on ? 'Pago \u2713' : 'Pendente';
+  }
+
+  function marcarVencimentos(){
+    const hoje = new Date(); hoje.setHours(0,0,0,0);
+    linhas().forEach(tr => {
+      tr.classList.remove('vencida','vence-hoje');
+      const d = tr.querySelector('.data');
+      const fn = tr.querySelector('.funcao');
+      if (!d || !fn || !fn.textContent.includes('Previs\u00e3o de agosto')) return;
+      const m = d.textContent.trim().match(/^(\d{2})\/(\d{2})$/);
+      if (!m) return;
+      const venc = new Date(2026, parseInt(m[2],10)-1, parseInt(m[1],10));
+      if (tr.classList.contains('paga')) return;
+      if (venc < hoje) tr.classList.add('vencida');
+      else if (venc.getTime() === hoje.getTime()) tr.classList.add('vence-hoje');
+    });
+  }
+
+  function aplicar(pagos){
+    const set = new Set(pagos);
+    linhas().forEach(tr => pintar(tr, set.has(rowId(tr))));
+    marcarVencimentos();
+    recalc();
+  }
+
+  function pagosAtuais(){
+    const out = [];
+    linhas().forEach(tr => { if (tr.classList.contains('paga')) out.push(rowId(tr)); });
+    return out;
+  }
+
+  /* ============ chip ============ */
+  function status(estado, txt){
+    if (!chip) return;
+    chip.dataset.estado = estado;
+    chip.textContent = txt;
+  }
+  function horaDe(iso){
+    if (!iso) return null;
+    const d = new Date(iso);
+    return isNaN(d) ? null : d.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+  }
+
+  /* ============ sincroniza\u00e7\u00e3o ============ */
+  const API = '/api/estado';
+  const KEY = 'ludus-despesas-agosto-2026';
+  let online = false;
+  let emVoo = 0;
+
+  function salvarLocal(){
+    try { localStorage.setItem(KEY, JSON.stringify(pagosAtuais())); } catch(e){}
+  }
+  function lerLocal(){
+    try {
+      const v = JSON.parse(localStorage.getItem(KEY) || 'null');
+      return Array.isArray(v) ? v : null;
+    } catch(e){ return null; }
+  }
+
+  function modoLocal(msg){
+    online = false;
+    document.body.classList.add('offline');
+    status('local', msg || 'Salvo s\u00f3 neste navegador');
+  }
+
+  async function carregar(silencioso){
+    try {
+      const r = await fetch(API, {cache: 'no-store'});
+      if (r.status === 401){ location.reload(); return; }
+      const j = await r.json();
+      if (!r.ok){
+        if (j.erro === 'banco_nao_configurado') modoLocal('Banco n\u00e3o configurado \u2014 salvando local');
+        else if (!silencioso) status('erro', 'Sem conex\u00e3o com o servidor');
+        return;
+      }
+      online = true;
+      document.body.classList.remove('offline');
+      if (emVoo === 0) aplicar(j.pagos || []);
+      const h = horaDe(j.atualizadoEm);
+      status('ok', h ? ('Sincronizado \u2014 ' + h) : 'Sincronizado');
+      salvarLocal();
+    } catch(e){
+      if (!silencioso) status('erro', 'Sem conex\u00e3o \u2014 tentando de novo');
+    }
+  }
+
+  async function enviar(acao, id){
+    if (!online){ salvarLocal(); return; }
+    emVoo++;
+    status('salvando', 'Salvando\u2026');
+    try {
+      const r = await fetch(API, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({acao, id}),
+      });
+      if (r.status === 401){ location.reload(); return; }
+      const j = await r.json();
+      if (!r.ok) throw new Error(j.erro || 'falha');
+      emVoo--;
+      if (emVoo === 0) aplicar(j.pagos || []);
+      status('ok', 'Salvo \u2014 ' + (horaDe(j.atualizadoEm) || 'agora'));
+      salvarLocal();
+      return;
+    } catch(e){
+      emVoo--;
+      salvarLocal();
+      status('erro', 'Falha ao salvar \u2014 recarregue a p\u00e1gina');
+    }
+  }
+
+  /* ============ a\u00e7\u00f5es ============ */
+  function toggle(cb){
+    const tr = cb.closest('tr');
+    pintar(tr, cb.checked);
+    marcarVencimentos();
+    recalc();
+    enviar(cb.checked ? 'marcar' : 'desmarcar', rowId(tr));
+  }
+
+  function limparMarcacoes(){
+    linhas().forEach(tr => pintar(tr, false));
+    marcarVencimentos();
+    recalc();
+    enviar('limpar', null);
+  }
+
+  function copiar(btn, txt){
+    navigator.clipboard.writeText(txt).then(() => {
+      const o = btn.textContent; btn.textContent = 'ok!';
+      setTimeout(() => btn.textContent = o, 1100);
+    });
+  }
+
+  /* ============ boot ============ */
+  const local = lerLocal();
+  if (local) aplicar(local); else { marcarVencimentos(); recalc(); }
+
+  carregar(false);
+  setInterval(() => { if (!document.hidden && emVoo === 0) carregar(true); }, 10000);
+  window.addEventListener('focus', () => { if (emVoo === 0) carregar(true); });
+</script>
+</body>
+</html>

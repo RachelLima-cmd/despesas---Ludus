@@ -792,6 +792,7 @@
       const j = await r.json();
       if (!r.ok){
         if (j.erro === 'banco_nao_configurado') modoLocal('Banco n\u00e3o configurado \u2014 salvando local');
+        else if (j.erro === 'banco_dormindo') modoLocal('Banco hibernando — reative no Supabase');
         else if (!silencioso) status('erro', 'Sem conex\u00e3o com o servidor');
         return;
       }

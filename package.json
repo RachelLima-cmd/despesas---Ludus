@@ -1,0 +1,9 @@
+{
+  "name": "despesas-ludus",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Painel interno de despesas da Ludus, com senha e status compartilhado",
+  "dependencies": {
+    "pg": "^8.13.1"
+  }
+}

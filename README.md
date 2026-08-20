@@ -9,7 +9,7 @@ O status é salvo no servidor e compartilhado — todo mundo que entrar com a se
 | Arquivo | O que faz |
 | --- | --- |
 | `middleware.js` | Porta de entrada. Nenhuma página é servida sem a senha. Roda na borda, antes de tudo. |
-| `api/estado.js` | Lê e grava quais despesas já foram pagas (Redis / Upstash). |
+| `api/estado.js` | Lê e grava quais despesas já foram pagas (Postgres / Supabase). Cria a tabela sozinho. |
 | `public/index.html` | O painel em si. |
 
 ## Variáveis de ambiente (Vercel → Settings → Environment Variables)
@@ -17,17 +17,22 @@ O status é salvo no servidor e compartilhado — todo mundo que entrar com a se
 | Variável | Origem | Para quê |
 | --- | --- | --- |
 | `SENHA_PAINEL` | você define | Senha de entrada do painel. **Obrigatória** — sem ela o site fica bloqueado. |
-| `KV_REST_API_URL` | criada sozinha | Endereço do Redis. Aparece ao conectar o banco em *Storage*. |
-| `KV_REST_API_TOKEN` | criada sozinha | Token do Redis. Idem. |
+| `POSTGRES_URL` | criada sozinha | Conexão com o Postgres. Aparece ao conectar o Supabase em *Storage*. |
 
 Se o banco não estiver conectado, o painel continua funcionando, mas as marcações
 ficam salvas apenas no navegador de quem marcou (o indicador no topo avisa).
 
 ## Como rodar o banco
 
-1. No projeto na Vercel: **Storage → Create Database → Upstash for Redis** (plano gratuito).
-2. Conectar ao projeto — as variáveis `KV_REST_API_*` entram sozinhas.
+1. No projeto na Vercel: **Storage → Create Database → Supabase** (plano gratuito).
+2. Conectar ao projeto — as variáveis (`POSTGRES_URL` e companhia) entram sozinhas.
 3. **Deployments → Redeploy** para o novo deploy enxergar as variáveis.
+
+A tabela `despesas_pagas` é criada automaticamente no primeiro acesso — não há SQL para rodar na mão.
+
+No plano gratuito o Supabase **hiberna após 7 dias sem uso**. Quando isso acontece o painel
+continua abrindo, mostra *"Banco hibernando"* e salva as marcações localmente; basta reativar
+o projeto no painel do Supabase para voltar a sincronizar.
 
 ## Trocar a senha
 

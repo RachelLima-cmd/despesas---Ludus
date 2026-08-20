@@ -1,37 +1,62 @@
-// Estado compartilhado das despesas (quem já foi pago).
-// Guarda um SET no Redis (Upstash / Vercel KV) — cada membro é o id de uma linha.
-// Usar um SET em vez de sobrescrever a lista inteira evita que duas pessoas
-// marcando ao mesmo tempo apaguem a marcação uma da outra.
+// Estado compartilhado das despesas (quem já foi pago) — Postgres / Supabase.
+//
+// Uma linha na tabela = uma despesa paga. Marcar insere, desmarcar remove.
+// Isso evita que duas pessoas marcando ao mesmo tempo apaguem a marcação
+// uma da outra, e ainda guarda quando cada uma foi paga.
+//
+// A tabela é criada sozinha no primeiro acesso — nada de SQL manual.
 
-const CHAVE = 'ludus:despesas:agosto2026:pagos';
-const CHAVE_TS = 'ludus:despesas:agosto2026:atualizado';
+const { Pool } = require('pg');
 
-function credenciais() {
-  const url =
-    process.env.KV_REST_API_URL ||
-    process.env.UPSTASH_REDIS_REST_URL ||
-    process.env.REDIS_REST_URL;
-  const token =
-    process.env.KV_REST_API_TOKEN ||
-    process.env.UPSTASH_REDIS_REST_TOKEN ||
-    process.env.REDIS_REST_TOKEN;
-  return url && token ? { url: url.replace(/\/+$/, ''), token } : null;
+const MES = 'agosto2026';
+let pool = null;
+let tabelaPronta = false;
+
+function conexao() {
+  return (
+    process.env.POSTGRES_URL ||
+    process.env.SUPABASE_POSTGRES_URL ||
+    process.env.DATABASE_URL ||
+    process.env.POSTGRES_URL_NON_POOLING ||
+    null
+  );
 }
 
-async function redis(cred, comandos) {
-  const resposta = await fetch(`${cred.url}/pipeline`, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${cred.token}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(comandos),
+function getPool() {
+  if (pool) return pool;
+  const url = conexao();
+  if (!url) return null;
+  pool = new Pool({
+    connectionString: url,
+    max: 1,
+    idleTimeoutMillis: 10000,
+    connectionTimeoutMillis: 8000,
+    ssl: { rejectUnauthorized: false },
   });
-  if (!resposta.ok) {
-    throw new Error(`redis ${resposta.status}: ${await resposta.text()}`);
-  }
-  const dados = await resposta.json();
-  return dados.map((d) => (d && 'result' in d ? d.result : null));
+  return pool;
+}
+
+async function garantirTabela(cliente) {
+  if (tabelaPronta) return;
+  await cliente.query(`
+    CREATE TABLE IF NOT EXISTS despesas_pagas (
+      mes         text        NOT NULL,
+      linha_id    text        NOT NULL,
+      pago_em     timestamptz NOT NULL DEFAULT now(),
+      PRIMARY KEY (mes, linha_id)
+    )
+  `);
+  tabelaPronta = true;
+}
+
+async function lerEstado(cliente) {
+  const r = await cliente.query(
+    'SELECT linha_id, pago_em FROM despesas_pagas WHERE mes = $1 ORDER BY pago_em',
+    [MES],
+  );
+  const pagos = r.rows.map((l) => l.linha_id);
+  const ultimo = r.rows.reduce((a, l) => (!a || l.pago_em > a ? l.pago_em : a), null);
+  return { pagos, atualizadoEm: ultimo ? new Date(ultimo).toISOString() : null };
 }
 
 function corpoJson(req) {
@@ -49,50 +74,64 @@ function corpoJson(req) {
 module.exports = async (req, res) => {
   res.setHeader('cache-control', 'no-store');
 
-  const cred = credenciais();
-  if (!cred) {
+  const p = getPool();
+  if (!p) {
     res.status(503).json({
       erro: 'banco_nao_configurado',
-      dica: 'Conecte o Upstash Redis em Vercel → Storage e faça um novo deploy.',
+      dica: 'Conecte o Supabase em Vercel → Storage e faça um novo deploy.',
+    });
+    return;
+  }
+
+  let cliente;
+  try {
+    cliente = await p.connect();
+  } catch (e) {
+    // Supabase no plano gratuito hiberna após 7 dias sem uso.
+    res.status(503).json({
+      erro: 'banco_dormindo',
+      dica: 'Reative o projeto no painel do Supabase (leva ~1 minuto).',
+      detalhe: String(e.message || e),
     });
     return;
   }
 
   try {
+    await garantirTabela(cliente);
+
     if (req.method === 'GET') {
-      const [pagos, ts] = await redis(cred, [
-        ['SMEMBERS', CHAVE],
-        ['GET', CHAVE_TS],
-      ]);
-      res.status(200).json({ pagos: pagos || [], atualizadoEm: ts || null });
+      res.status(200).json(await lerEstado(cliente));
       return;
     }
 
     if (req.method === 'POST') {
       const { acao, id } = corpoJson(req);
-      const agora = new Date().toISOString();
 
       if (acao === 'limpar') {
-        await redis(cred, [
-          ['DEL', CHAVE],
-          ['SET', CHAVE_TS, agora],
-        ]);
+        await cliente.query('DELETE FROM despesas_pagas WHERE mes = $1', [MES]);
       } else if (acao === 'marcar' || acao === 'desmarcar') {
-        if (!id || typeof id !== 'string') {
+        if (!id || typeof id !== 'string' || id.length > 300) {
           res.status(400).json({ erro: 'id_invalido' });
           return;
         }
-        await redis(cred, [
-          [acao === 'marcar' ? 'SADD' : 'SREM', CHAVE, id],
-          ['SET', CHAVE_TS, agora],
-        ]);
+        if (acao === 'marcar') {
+          await cliente.query(
+            `INSERT INTO despesas_pagas (mes, linha_id) VALUES ($1, $2)
+             ON CONFLICT (mes, linha_id) DO NOTHING`,
+            [MES, id],
+          );
+        } else {
+          await cliente.query('DELETE FROM despesas_pagas WHERE mes = $1 AND linha_id = $2', [
+            MES,
+            id,
+          ]);
+        }
       } else {
         res.status(400).json({ erro: 'acao_invalida' });
         return;
       }
 
-      const [pagos] = await redis(cred, [['SMEMBERS', CHAVE]]);
-      res.status(200).json({ pagos: pagos || [], atualizadoEm: agora });
+      res.status(200).json(await lerEstado(cliente));
       return;
     }
 
@@ -100,5 +139,7 @@ module.exports = async (req, res) => {
     res.status(405).json({ erro: 'metodo_nao_permitido' });
   } catch (e) {
     res.status(502).json({ erro: 'falha_no_banco', detalhe: String(e.message || e) });
+  } finally {
+    cliente.release();
   }
 };

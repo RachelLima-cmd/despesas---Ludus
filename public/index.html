@@ -800,7 +800,8 @@
       document.body.classList.remove('offline');
       if (emVoo === 0) aplicar(j.pagos || []);
       const h = horaDe(j.atualizadoEm);
-      status('ok', h ? ('Sincronizado \u2014 ' + h) : 'Sincronizado');
+      const onde = j.banco ? (' · ' + j.banco) : '';
+      status('ok', (h ? ('Sincronizado — ' + h) : 'Sincronizado') + onde);
       salvarLocal();
     } catch(e){
       if (!silencioso) status('erro', 'Sem conex\u00e3o \u2014 tentando de novo');
